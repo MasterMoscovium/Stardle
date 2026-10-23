@@ -1,284 +1,335 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <link rel="preload" href="script.js" as="script">
-    <link rel="preload" href="possibleWords.js" as="script">
-    <link rel="stylesheet" type="text/css" href="styles.css?v=v6ultra">
-    <link rel="stylesheet" type="text/css" href="stardle.css?v=v6ultra">
-    <style>
-      /* Force maximum brightness, crystal-clear white letters, and luminous astronomical tiles */
-      :root, :root.dark, :root.light {
-        --right-spot: #22c55e !important;
-        --wrong-spot: #eab308 !important;
-        --wrong-letter: #334155 !important;
-        --rightSpotColor: #22c55e !important;
-        --wrongSpotColor: #eab308 !important;
-        --wrongLetterColor: #334155 !important;
-        --submittedTextColor: #ffffff !important;
-        --textColor: #ffffff !important;
-      }
 
-      /* Tiles */
-      box, row box, #game-board box {
-        color: #ffffff !important;
-        font-family: 'Outfit', -apple-system, sans-serif !important;
-        font-weight: 800 !important;
-        font-size: clamp(1.4rem, 4.5vh, 2.2rem) !important;
-        border-radius: 4px !important;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <link rel="preload" href="script.js" as="script">
+  <link rel="preload" href="possibleWords.js" as="script">
+  <link rel="stylesheet" type="text/css" href="styles.css?v=v6ultra">
+  <link rel="stylesheet" type="text/css" href="stardle.css?v=v6ultra">
+  <style>
+    /* Force maximum brightness, crystal-clear white letters, and luminous astronomical tiles */
+    :root,
+    :root.dark,
+    :root.light {
+      --right-spot: #22c55e !important;
+      --wrong-spot: #eab308 !important;
+      --wrong-letter: #334155 !important;
+      --rightSpotColor: #22c55e !important;
+      --wrongSpotColor: #eab308 !important;
+      --wrongLetterColor: #334155 !important;
+      --submittedTextColor: #ffffff !important;
+      --textColor: #ffffff !important;
+    }
 
-      box.rightSpot, row box.rightSpot, .rightSpot {
-        background-color: #22c55e !important;
-        border-color: #22c55e !important;
-        color: #ffffff !important;
-        font-weight: 800 !important;
-        box-shadow: 0 0 16px rgba(34, 197, 94, 0.5) !important;
-      }
+    /* Tiles */
+    box,
+    row box,
+    #game-board box {
+      color: #ffffff !important;
+      font-family: 'Outfit', -apple-system, sans-serif !important;
+      font-weight: 800 !important;
+      font-size: clamp(1.4rem, 4.5vh, 2.2rem) !important;
+      border-radius: 4px !important;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+    }
 
-      box.wrongSpot, row box.wrongSpot, .wrongSpot {
-        background-color: #eab308 !important;
-        border-color: #eab308 !important;
-        color: #ffffff !important;
-        font-weight: 800 !important;
-        box-shadow: 0 0 16px rgba(234, 179, 8, 0.5) !important;
-      }
+    box.rightSpot,
+    row box.rightSpot,
+    .rightSpot {
+      background-color: #22c55e !important;
+      border-color: #22c55e !important;
+      color: #ffffff !important;
+      font-weight: 800 !important;
+      box-shadow: 0 0 16px rgba(34, 197, 94, 0.5) !important;
+    }
 
-      box.wrongLetter, row box.wrongLetter, .wrongLetter {
-        background-color: #334155 !important;
-        border-color: #334155 !important;
-        color: #ffffff !important;
-        font-weight: 800 !important;
-      }
+    box.wrongSpot,
+    row box.wrongSpot,
+    .wrongSpot {
+      background-color: #eab308 !important;
+      border-color: #eab308 !important;
+      color: #ffffff !important;
+      font-weight: 800 !important;
+      box-shadow: 0 0 16px rgba(234, 179, 8, 0.5) !important;
+    }
 
-      /* Keyboard */
-      keyboard-row button.rightSpot {
-        background: #22c55e !important;
-        color: #ffffff !important;
-        font-weight: 800 !important;
-      }
-      keyboard-row button.wrongSpot {
-        background: #eab308 !important;
-        color: #ffffff !important;
-        font-weight: 800 !important;
-      }
-      keyboard-row button.wrongLetter {
-        background: #1e293b !important;
-        color: #64748b !important;
-      }
+    box.wrongLetter,
+    row box.wrongLetter,
+    .wrongLetter {
+      background-color: #334155 !important;
+      border-color: #334155 !important;
+      color: #ffffff !important;
+      font-weight: 800 !important;
+    }
 
-      /* No dimming or blur on game board */
-      .blur, #game.blur, h1.blur {
-        filter: none !important;
-        opacity: 1 !important;
-      }
-    </style>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="/icon.svg" />
-    <link rel="manifest" href="/manifest.json">
-    <title>Stardle — Dhruva Astronomy Club</title>
-    <meta name="description" content="Stardle: the daily astrophysics word game from Dhruva Astronomy Club. Guess today's cosmic word in 6 tries!">
-  </head>
-  <body>
+    /* Keyboard */
+    keyboard-row button.rightSpot {
+      background: #22c55e !important;
+      color: #ffffff !important;
+      font-weight: 800 !important;
+    }
 
-    <!-- Starfield Canvas Background -->
-    <canvas id="starfield"></canvas>
+    keyboard-row button.wrongSpot {
+      background: #eab308 !important;
+      color: #ffffff !important;
+      font-weight: 800 !important;
+    }
 
-    <toast-container></toast-container>
+    keyboard-row button.wrongLetter {
+      background: #1e293b !important;
+      color: #64748b !important;
+    }
 
-    <!-- Header -->
-    <header>
-      <!-- Hint Button (left) -->
-      <div id="hint-btn-wrapper">
-        <button id="hint-btn" aria-label="Get a musical hint" onclick="toggleHintPanel()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M9 18h6"/>
-            <path d="M10 22h4"/>
-            <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
-          </svg>
-          <span>Hint</span>
-        </button>
-        <!-- Hint Panel -->
-        <div id="hint-panel" role="dialog" aria-label="Song hints" aria-hidden="true">
-          <div id="hint-panel-inner">
-            <div id="hint-panel-header">
-              <p id="hint-song-label">SONG HINT</p>
-              <button id="hint-panel-close-btn" onclick="toggleHintPanel()" aria-label="Close hint panel">✕</button>
-            </div>
-            <p id="hint-song-name">—</p>
-            <p id="hint-song-artist">—</p>
-            <div id="hint-links">
-              <a id="hint-spotify" href="#" target="_blank" rel="noopener" class="hint-link spotify-link">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-                Spotify
-              </a>
-              <a id="hint-apple" href="#" target="_blank" rel="noopener" class="hint-link apple-link">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
-                Apple Music
-              </a>
-              <a id="hint-youtube" href="#" target="_blank" rel="noopener" class="hint-link youtube-link">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12 9.684 15.54z"/></svg>
-                YouTube Music
-              </a>
-            </div>
-            <p id="hint-disclaimer">here we respect everyone's choices<br><em>(unless you use something like Jio Saavn)</em></p>
-          </div>
-        </div>
-      </div>
+    /* No dimming or blur on game board */
+    .blur,
+    #game.blur,
+    h1.blur {
+      filter: none !important;
+      opacity: 1 !important;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="icon" href="/icon.svg" />
+  <link rel="manifest" href="/manifest.json">
+  <title>Stardle — Dhruva Astronomy Club</title>
+  <meta name="description"
+    content="Stardle: the daily astrophysics word game from Dhruva Astronomy Club. Guess today's cosmic word in 6 tries!">
+</head>
 
-      <!-- Title (center) -->
-      <h1 id="stardle-title" onClick="toggleColorScheme()">STARDLE</h1>
+<body>
 
-      <!-- Right side: Stats icon + Dhruva logo + Hamburger (mobile) -->
-      <div id="header-right">
-        <button id="how-to-play-btn" aria-label="How to play" onclick="showHowToPlay()" title="How to play">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        </button>
-        <!-- Desktop-only: Play Constellations link -->
-        <a href="https://constellations-v1.vercel.app/" class="game-link" target="_blank" rel="noopener">
-          Play Constellations →
-        </a>
-        <svg id="stats-icon" class="header-icon" role="button" onclick="showStatsModal()" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-          <title>Show Stats</title>
-          <path fill="var(--headerIconColor)" d="M16,11V3H8v6H2v12h20V11H16z M10,5h4v14h-4V5z M4,11h4v8H4V11z M20,19h-4v-6h4V19z"></path>
+  <!-- Starfield Canvas Background -->
+  <canvas id="starfield"></canvas>
+
+  <toast-container></toast-container>
+
+  <!-- Header -->
+  <header>
+    <!-- Hint Button (left) -->
+    <div id="hint-btn-wrapper">
+      <button id="hint-btn" aria-label="Get a musical hint" onclick="toggleHintPanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 18h6" />
+          <path d="M10 22h4" />
+          <path
+            d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14" />
         </svg>
-        <!-- Desktop-only: Dhruva logo -->
-        <a href="https://teamdhruva.com" target="_blank" rel="noopener" id="dhruva-logo-link" aria-label="Dhruva Astronomy Club" class="desktop-only">
-          <img src="dhruva_logo.jpg" alt="Dhruva Astronomy Club logo" id="dhruva-logo" />
-        </a>
-        <!-- Mobile-only: Hamburger menu -->
-        <button id="hamburger-btn" aria-label="Open menu" aria-expanded="false" onclick="toggleMobileMenu()" class="mobile-only">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
-        </button>
-        <!-- Mobile dropdown menu -->
-        <div id="mobile-menu" role="menu" aria-hidden="true" class="mobile-only">
-          <a href="https://constellations-v1.vercel.app/" target="_blank" rel="noopener" role="menuitem" class="mobile-menu-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            Play Constellations
-          </a>
-          <div class="mobile-menu-divider"></div>
-          <a href="https://teamdhruva.com" target="_blank" rel="noopener" role="menuitem" class="mobile-menu-item">
-            <img src="dhruva_logo.jpg" alt="Dhruva logo" class="mobile-menu-logo" />
-            Dhruva Astronomy Club
-          </a>
+        <span>Hint</span>
+      </button>
+      <!-- Hint Panel -->
+      <div id="hint-panel" role="dialog" aria-label="Song hints" aria-hidden="true">
+        <div id="hint-panel-inner">
+          <div id="hint-panel-header">
+            <p id="hint-song-label">SONG HINT</p>
+            <button id="hint-panel-close-btn" onclick="toggleHintPanel()" aria-label="Close hint panel">✕</button>
+          </div>
+          <p id="hint-song-name">—</p>
+          <p id="hint-song-artist">—</p>
+          <div id="hint-links">
+            <a id="hint-spotify" href="#" target="_blank" rel="noopener" class="hint-link spotify-link">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+              </svg>
+              Spotify
+            </a>
+            <a id="hint-apple" href="#" target="_blank" rel="noopener" class="hint-link apple-link">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
+              </svg>
+              Apple Music
+            </a>
+            <a id="hint-youtube" href="#" target="_blank" rel="noopener" class="hint-link youtube-link">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12 9.684 15.54z" />
+              </svg>
+              YouTube Music
+            </a>
+          </div>
+          <p id="hint-disclaimer">here we respect everyone's choices<br><em>(unless you use something like Jio
+              Saavn)</em></p>
         </div>
       </div>
-    </header>
-
-    <main>
-      <section id='game' aria-label='Game Area'>
-      <div id='board-container'>
-      <section id='game-board' aria-label="Game Board">
-        <row id="row-0">
-          <box id="row-0-box-1"></box>
-          <box id="row-0-box-2"></box>
-          <box id="row-0-box-3"></box>
-          <box id="row-0-box-4"></box>
-          <box id="row-0-box-5"></box>
-        </row>
-        <row id="row-1">
-          <box id="row-1-box-1"></box>
-          <box id="row-1-box-2"></box>
-          <box id="row-1-box-3"></box>
-          <box id="row-1-box-4"></box>
-          <box id="row-1-box-5"></box>
-        </row>
-        <row id="row-2">
-          <box id="row-2-box-1"></box>
-          <box id="row-2-box-3"></box>
-          <box id="row-2-box-2"></box>
-          <box id="row-2-box-4"></box>
-          <box id="row-2-box-5"></box>
-        </row>
-        <row id="row-3">
-          <box id="row-3-box-1"></box>
-          <box id="row-3-box-3"></box>
-          <box id="row-3-box-2"></box>
-          <box id="row-3-box-4"></box>
-          <box id="row-3-box-5"></box>
-        </row>
-        <row id="row-4">
-          <box id="row-4-box-1"></box>
-          <box id="row-4-box-3"></box>
-          <box id="row-4-box-2"></box>
-          <box id="row-4-box-4"></box>
-          <box id="row-4-box-5"></box>
-        </row>
-        <row id="row-5">
-          <box id="row-5-box-1"></box>
-          <box id="row-5-box-3"></box>
-          <box id="row-5-box-2"></box>
-          <box id="row-5-box-4"></box>
-          <box id="row-5-box-5"></box>
-        </row>
-      </section>
     </div>
-    <span id="keyboard-container">
-      <section aria-label="Keyboard" id="keyboard">
-        <keyboard-row>
-          <button id='q'>q</button>
-          <button id='w'>w</button>
-          <button id='e'>e</button>
-          <button id='r'>r</button>
-          <button id='t'>t</button>
-          <button id='y'>y</button>
-          <button id='u'>u</button>
-          <button id='i'>i</button>
-          <button id='o'>o</button>
-          <button id='p'>p</button>
-        </keyboard-row>
-        <keyboard-row>
-          <button id='a'>a</button>
-          <button id='s'>s</button>
-          <button id='d'>d</button>
-          <button id='f'>f</button>
-          <button id='g'>g</button>
-          <button id='h'>h</button>
-          <button id='j'>j</button>
-          <button id='k'>k</button>
-          <button id='l'>l</button>
-        </keyboard-row>
-        <keyboard-row>
-          <button id='enter'>enter</button>
-          <button id='z'>z</button>
-          <button id='x'>x</button>
-          <button id='c'>c</button>
-          <button id='v'>v</button>
-          <button id='b'>b</button>
-          <button id='n'>n</button>
-          <button id='m'>m</button>
-          <button aria-label="Backspace" id='backspace'>
-          <svg id='backspaceIcon' xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-            <path fill="var(--color-tone-1)" d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.66-7H22v14zm-11.59-2L14 13.41 17.59 17 19 15.59 15.41 12 19 8.41 17.59 7 14 10.59 10.41 7 9 8.41 12.59 12 9 15.59z"></path>
+
+    <!-- Title (center) -->
+    <h1 id="stardle-title" onClick="toggleColorScheme()">STARDLE</h1>
+
+    <!-- Right side: Stats icon + Dhruva logo + Hamburger (mobile) -->
+    <div id="header-right">
+      <button id="how-to-play-btn" aria-label="How to play" onclick="showHowToPlay()" title="How to play">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+      </button>
+      <!-- Desktop-only: Play Constellations link -->
+      <a href="https://constellations-v1.vercel.app/" class="game-link" target="_blank" rel="noopener">
+        Play Constellations →
+      </a>
+      <svg id="stats-icon" class="header-icon" role="button" onclick="showStatsModal()"
+        xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+        <title>Show Stats</title>
+        <path fill="var(--headerIconColor)"
+          d="M16,11V3H8v6H2v12h20V11H16z M10,5h4v14h-4V5z M4,11h4v8H4V11z M20,19h-4v-6h4V19z"></path>
+      </svg>
+      <!-- Desktop-only: Dhruva logo -->
+      <a href="https://teamdhruva.com" target="_blank" rel="noopener" id="dhruva-logo-link"
+        aria-label="Dhruva Astronomy Club" class="desktop-only">
+        <img src="dhruva_logo.jpg" alt="Dhruva Astronomy Club logo" id="dhruva-logo" />
+      </a>
+      <!-- Mobile-only: Hamburger menu -->
+      <button id="hamburger-btn" aria-label="Open menu" aria-expanded="false" onclick="toggleMobileMenu()"
+        class="mobile-only">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+      <!-- Mobile dropdown menu -->
+      <div id="mobile-menu" role="menu" aria-hidden="true" class="mobile-only">
+        <a href="https://constellations-v1.vercel.app/" target="_blank" rel="noopener" role="menuitem"
+          class="mobile-menu-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg>
-          </button>
-      </keyboard-row>
+          Play Constellations
+        </a>
+        <div class="mobile-menu-divider"></div>
+        <a href="https://teamdhruva.com" target="_blank" rel="noopener" role="menuitem" class="mobile-menu-item">
+          <img src="dhruva_logo.jpg" alt="Dhruva logo" class="mobile-menu-logo" />
+          Dhruva Astronomy Club
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id='game' aria-label='Game Area'>
+      <div id='board-container'>
+        <section id='game-board' aria-label="Game Board">
+          <row id="row-0">
+            <box id="row-0-box-1"></box>
+            <box id="row-0-box-2"></box>
+            <box id="row-0-box-3"></box>
+            <box id="row-0-box-4"></box>
+            <box id="row-0-box-5"></box>
+          </row>
+          <row id="row-1">
+            <box id="row-1-box-1"></box>
+            <box id="row-1-box-2"></box>
+            <box id="row-1-box-3"></box>
+            <box id="row-1-box-4"></box>
+            <box id="row-1-box-5"></box>
+          </row>
+          <row id="row-2">
+            <box id="row-2-box-1"></box>
+            <box id="row-2-box-3"></box>
+            <box id="row-2-box-2"></box>
+            <box id="row-2-box-4"></box>
+            <box id="row-2-box-5"></box>
+          </row>
+          <row id="row-3">
+            <box id="row-3-box-1"></box>
+            <box id="row-3-box-3"></box>
+            <box id="row-3-box-2"></box>
+            <box id="row-3-box-4"></box>
+            <box id="row-3-box-5"></box>
+          </row>
+          <row id="row-4">
+            <box id="row-4-box-1"></box>
+            <box id="row-4-box-3"></box>
+            <box id="row-4-box-2"></box>
+            <box id="row-4-box-4"></box>
+            <box id="row-4-box-5"></box>
+          </row>
+          <row id="row-5">
+            <box id="row-5-box-1"></box>
+            <box id="row-5-box-3"></box>
+            <box id="row-5-box-2"></box>
+            <box id="row-5-box-4"></box>
+            <box id="row-5-box-5"></box>
+          </row>
+        </section>
+      </div>
+      <span id="keyboard-container">
+        <section aria-label="Keyboard" id="keyboard">
+          <keyboard-row>
+            <button id='q'>q</button>
+            <button id='w'>w</button>
+            <button id='e'>e</button>
+            <button id='r'>r</button>
+            <button id='t'>t</button>
+            <button id='y'>y</button>
+            <button id='u'>u</button>
+            <button id='i'>i</button>
+            <button id='o'>o</button>
+            <button id='p'>p</button>
+          </keyboard-row>
+          <keyboard-row>
+            <button id='a'>a</button>
+            <button id='s'>s</button>
+            <button id='d'>d</button>
+            <button id='f'>f</button>
+            <button id='g'>g</button>
+            <button id='h'>h</button>
+            <button id='j'>j</button>
+            <button id='k'>k</button>
+            <button id='l'>l</button>
+          </keyboard-row>
+          <keyboard-row>
+            <button id='enter'>enter</button>
+            <button id='z'>z</button>
+            <button id='x'>x</button>
+            <button id='c'>c</button>
+            <button id='v'>v</button>
+            <button id='b'>b</button>
+            <button id='n'>n</button>
+            <button id='m'>m</button>
+            <button aria-label="Backspace" id='backspace'>
+              <svg id='backspaceIcon' xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path fill="var(--color-tone-1)"
+                  d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.66-7H22v14zm-11.59-2L14 13.41 17.59 17 19 15.59 15.41 12 19 8.41 17.59 7 14 10.59 10.41 7 9 8.41 12.59 12 9 15.59z">
+                </path>
+              </svg>
+            </button>
+          </keyboard-row>
+        </section>
+      </span>
     </section>
-    </span>
-  </section>
 
     <!-- Stats Modal -->
     <stats-container>
       <script>
         document
           .querySelector('stats-container')
-            .addEventListener('click', e => {
-              e.target == e.currentTarget && closeStatsModal()
-            })
+          .addEventListener('click', e => {
+            e.target == e.currentTarget && closeStatsModal()
+          })
       </script>
       <stats>
-        <header id='statsHeader'>  
+        <header id='statsHeader'>
           <h2> Statistics </h2>
-          <svg id='closeIcon' role="button" aria-label="Close" onclick='closeStatsModal(this)' xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-            <path fill="var(--color-tone-3)" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+          <svg id='closeIcon' role="button" aria-label="Close" onclick='closeStatsModal(this)'
+            xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+            <path fill="var(--color-tone-3)"
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
+            </path>
           </svg>
         </header>
         <div id='statList'>
@@ -317,25 +368,25 @@
             </bar-container>
             <bar-container>
               <bar id='bar-3'>
-              <bar-text></bar-text>
+                <bar-text></bar-text>
               </bar>
               <div class='barLabel'> 3 </div>
             </bar-container>
             <bar-container>
               <bar id='bar-4'>
-              <bar-text></bar-text>
+                <bar-text></bar-text>
               </bar>
               <div class='barLabel'> 4 </div>
             </bar-container>
             <bar-container>
               <bar id='bar-5'>
-              <bar-text></bar-text>
+                <bar-text></bar-text>
               </bar>
               <div class='barLabel'> 5 </div>
             </bar-container>
             <bar-container>
               <bar id='bar-6'>
-              <bar-text></bar-text>
+                <bar-text></bar-text>
               </bar>
               <div class='barLabel'> 6 </div>
             </bar-container>
@@ -352,7 +403,7 @@
               Word &amp; Song Clue
             </button>
             <button id='share' onclick='share()'>
-              Share 
+              Share
             </button>
           </div>
         </footer>
@@ -363,15 +414,15 @@
     <div id="word-popup-overlay" aria-hidden="true">
       <div id="word-popup">
         <button id="popup-close-x" onclick="closeWordPopup()" aria-label="Close modal">✕</button>
-        
+
         <div class="popup-badge">TODAY'S WORD</div>
-        
+
         <h2 id="popup-word-title">WORD</h2>
-        
+
         <div id="popup-explanation-box">
           <p id="popup-explanation"></p>
         </div>
-        
+
         <a id="popup-article-link" href="#" target="_blank" rel="noopener">
           Read Astronomy Article ↗
         </a>
@@ -386,15 +437,24 @@
           </div>
           <div class="popup-song-links">
             <a id="popup-spotify" href="#" target="_blank" rel="noopener" class="popup-music-link spotify">
-              <svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+              </svg>
               Spotify
             </a>
             <a id="popup-apple" href="#" target="_blank" rel="noopener" class="popup-music-link apple">
-              <svg viewBox="0 0 24 24"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
+              </svg>
               Apple Music
             </a>
             <a id="popup-youtube" href="#" target="_blank" rel="noopener" class="popup-music-link youtube">
-              <svg viewBox="0 0 24 24"><path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12 9.684 15.54z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12 9.684 15.54z" />
+              </svg>
               YouTube Music
             </a>
           </div>
@@ -407,14 +467,24 @@
       </div>
     </div>
 
-    </main>
+  </main>
   <!-- How To Play Modal -->
-  <div id="how-to-play-overlay" onclick="closeHowToPlay(event)" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(5,8,16,0.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+  <div id="how-to-play-overlay" onclick="closeHowToPlay(event)"
+    style="display:none;position:fixed;inset:0;z-index:500;background:rgba(5,8,16,0.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
     <div id="how-to-play-modal">
       <button id="htp-close" onclick="closeHowToPlay()" aria-label="Close">&times;</button>
       <h2>Welcome to Stardle!</h2>
-      <p class="htp-subtitle">The astronomy word game by <a href="https://teamdhruva.com" target="_blank">Dhruva Astronomy Club</a></p>
-      <p class="htp-desc">Stardle works just like the classic Wordle — but every word is an astrophysics term. Click the <strong>Hint</strong> <svg class="htp-hint-bulb" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg> button for a musical hint that leads you toward the word. A new word drops every day at midnight IST.</p>
+      <p class="htp-subtitle">The astronomy word game by <a href="https://teamdhruva.com" target="_blank">Dhruva
+          Astronomy Club</a></p>
+      <p class="htp-desc">Stardle works just like the classic Wordle — but every word is an astrophysics term. Click the
+        <strong>Hint</strong> <svg class="htp-hint-bulb" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 18h6" />
+          <path d="M10 22h4" />
+          <path
+            d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14" />
+        </svg> button for a musical hint that leads you toward the word. A new word drops every day at midnight IST.</p>
       <hr class="htp-divider">
       <h3>How to Play</h3>
       <p>Guess the Stardle in <strong>6 tries</strong>.</p>
@@ -425,24 +495,29 @@
       <div class="htp-examples">
         <p class="htp-example-label">Examples</p>
         <div class="htp-row">
-          <span class="htp-tile green">O</span><span class="htp-tile">R</span><span class="htp-tile">B</span><span class="htp-tile">I</span><span class="htp-tile">T</span>
+          <span class="htp-tile green">O</span><span class="htp-tile">R</span><span class="htp-tile">B</span><span
+            class="htp-tile">I</span><span class="htp-tile">T</span>
         </div>
         <p><strong>O</strong> is in the word and in the correct spot.</p>
         <div class="htp-row">
-          <span class="htp-tile">S</span><span class="htp-tile yellow">T</span><span class="htp-tile">A</span><span class="htp-tile">R</span><span class="htp-tile">S</span>
+          <span class="htp-tile">S</span><span class="htp-tile yellow">T</span><span class="htp-tile">A</span><span
+            class="htp-tile">R</span><span class="htp-tile">S</span>
         </div>
         <p><strong>T</strong> is in the word but in the wrong spot.</p>
         <div class="htp-row">
-          <span class="htp-tile">N</span><span class="htp-tile">O</span><span class="htp-tile">V</span><span class="htp-tile gray">A</span><span class="htp-tile">E</span>
+          <span class="htp-tile">N</span><span class="htp-tile">O</span><span class="htp-tile">V</span><span
+            class="htp-tile gray">A</span><span class="htp-tile">E</span>
         </div>
         <p><strong>A</strong> is not in the word in any spot.</p>
       </div>
       <hr class="htp-divider">
-      <p class="htp-footer">A new puzzle is released every day at midnight IST. Built on <a href="https://github.com/doeixd/Wordle-Vanilla" target="_blank">Wordle-Vanilla</a> by doeixd.</p>
+      <p class="htp-footer">A new puzzle is released every day at midnight IST. Built on <a
+          href="https://github.com/doeixd/Wordle-Vanilla" target="_blank">Wordle-Vanilla</a> by doeixd.</p>
     </div>
   </div>
-  </body>
+</body>
 
-  <script src="script.js?v=v6ultra"></script>
-  <script src="stardle.js?v=v6ultra"></script>
+<script src="script.js?v=v6ultra"></script>
+<script src="stardle.js?v=v6ultra"></script>
+
 </html>
