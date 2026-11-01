@@ -502,6 +502,18 @@ function startMidnightCountdown() {
   setInterval(tick, 1000);
 }
 
+function getStreamingUrl(url, fallbackQuery, platform) {
+  if (url && typeof url === 'string' && url !== '#' && url !== 'true' && url.startsWith('http')) {
+    return url;
+  }
+  if (fallbackQuery) {
+    if (platform === 'spotify') return `https://open.spotify.com/search/${fallbackQuery}`;
+    if (platform === 'apple')   return `https://music.apple.com/us/search?term=${fallbackQuery}`;
+    if (platform === 'youtube') return `https://music.youtube.com/search?q=${fallbackQuery}`;
+  }
+  return '#';
+}
+
 /* Update hint panel with today's song info */
 function updateHintPanel(hint) {
   if (!hint) hint = window.stardlePuzzleInfo?.hint || window.stardleSolution || State?.solution || State?.hint;
@@ -520,13 +532,9 @@ function updateHintPanel(hint) {
   if (songNameEl) songNameEl.textContent = song;
   if (artistEl)   artistEl.textContent   = artist;
 
-  const spotifyHref = (hint.spotify && hint.spotify !== '#') ? hint.spotify : (query ? `https://open.spotify.com/search/${query}` : '#');
-  const appleHref   = (hint.apple && hint.apple !== '#')     ? hint.apple   : (query ? `https://music.apple.com/us/search?term=${query}` : '#');
-  const youtubeHref = (hint.youtube && hint.youtube !== '#') ? hint.youtube : (query ? `https://music.youtube.com/search?q=${query}` : '#');
-
-  if (spotifyEl) spotifyEl.href = spotifyHref;
-  if (appleEl)   appleEl.href   = appleHref;
-  if (youtubeEl) youtubeEl.href = youtubeHref;
+  if (spotifyEl) spotifyEl.href = getStreamingUrl(hint.spotify, query, 'spotify');
+  if (appleEl)   appleEl.href   = getStreamingUrl(hint.apple, query, 'apple');
+  if (youtubeEl) youtubeEl.href = getStreamingUrl(hint.youtube, query, 'youtube');
 }
 
 
@@ -669,13 +677,13 @@ function showWordPopup() {
   const popApple = document.getElementById('popup-apple');
   const popYoutube = document.getElementById('popup-youtube');
 
-  const spotifyHref = (sol?.spotify && sol.spotify !== '#') || (hint?.spotify && hint.spotify !== '#') || (query ? `https://open.spotify.com/search/${query}` : '#');
-  const appleHref   = (sol?.apple && sol.apple !== '#')     || (hint?.apple && hint.apple !== '#')     || (query ? `https://music.apple.com/us/search?term=${query}` : '#');
-  const youtubeHref = (sol?.youtube && sol.youtube !== '#') || (hint?.youtube && hint.youtube !== '#') || (query ? `https://music.youtube.com/search?q=${query}` : '#');
+  const rawSpotify = (sol?.spotify && sol.spotify !== '#') ? sol.spotify : hint?.spotify;
+  const rawApple   = (sol?.apple && sol.apple !== '#')     ? sol.apple   : hint?.apple;
+  const rawYoutube = (sol?.youtube && sol.youtube !== '#') ? sol.youtube : hint?.youtube;
 
-  if (popSpotify) popSpotify.href = spotifyHref;
-  if (popApple)   popApple.href   = appleHref;
-  if (popYoutube) popYoutube.href = youtubeHref;
+  if (popSpotify) popSpotify.href = getStreamingUrl(rawSpotify, query, 'spotify');
+  if (popApple)   popApple.href   = getStreamingUrl(rawApple, query, 'apple');
+  if (popYoutube) popYoutube.href = getStreamingUrl(rawYoutube, query, 'youtube');
 
   if (hint) updateHintPanel(hint);
 
@@ -732,7 +740,7 @@ document.addEventListener('click', function(e) {
   const link = e.target.closest('a.hint-link, a.popup-music-link');
   if (link) {
     const href = link.getAttribute('href');
-    if (!href || href === '#' || href === 'javascript:void(0)') {
+    if (!href || href === '#' || href === 'javascript:void(0)' || href === 'true' || href.endsWith('/true')) {
       e.preventDefault();
       if (typeof showToast === 'function') {
         showToast('Hint link loading...', 1.5);
