@@ -90,6 +90,26 @@
     "explanation": "Atoms are the fundamental units of ordinary matter. Each atom has a nucleus of protons and neutrons, surrounded by electrons. Stars fuse atoms together to release enormous energy."
   },
   {
+    "word": "laser",
+    "song": "Blinding Lights",
+    "artist": "The Weeknd",
+    "spotify": "https://open.spotify.com/search/Blinding+Lights+The+Weeknd",
+    "apple": "https://music.apple.com/us/search?term=Blinding+Lights+The+Weeknd",
+    "youtube": "https://music.youtube.com/search?q=Blinding+Lights+The+Weeknd",
+    "articleUrl": "https://en.wikipedia.org/wiki/Laser",
+    "explanation": "LASER stands for Light Amplification by Stimulated Emission of Radiation. Lasers are used in astronomy for adaptive optics, LIDAR, and laser-ranging of the Moon."
+  },
+  {
+    "word": "quark",
+    "song": "Up and Down",
+    "artist": "Doja Cat",
+    "spotify": "https://open.spotify.com/search/Up+and+Down+Doja+Cat",
+    "apple": "https://music.apple.com/us/search?term=Up+and+Down+Doja+Cat",
+    "youtube": "https://music.youtube.com/search?q=Up+and+Down+Doja+Cat",
+    "articleUrl": "https://en.wikipedia.org/wiki/Quark",
+    "explanation": "Quarks are fundamental particles that combine to form hadrons like protons and neutrons. They are never found alone — a property called confinement."
+  },
+  {
     "word": "muons",
     "song": "How to Disappear",
     "artist": "Lana Del Rey",
@@ -120,16 +140,6 @@
     "explanation": "Hertz (Hz) is the SI unit of frequency, equal to one cycle per second. Radio waves, light, and gravitational waves are all measured in hertz."
   },
   {
-    "word": "laser",
-    "song": "Blinding Lights",
-    "artist": "The Weeknd",
-    "spotify": "https://open.spotify.com/search/Blinding+Lights+The+Weeknd",
-    "apple": "https://music.apple.com/us/search?term=Blinding+Lights+The+Weeknd",
-    "youtube": "https://music.youtube.com/search?q=Blinding+Lights+The+Weeknd",
-    "articleUrl": "https://en.wikipedia.org/wiki/Laser",
-    "explanation": "LASER stands for Light Amplification by Stimulated Emission of Radiation. Lasers are used in astronomy for adaptive optics, LIDAR, and laser-ranging of the Moon."
-  },
-  {
     "word": "light",
     "song": "Fast as You Can",
     "artist": "Fiona Apple",
@@ -158,16 +168,6 @@
     "youtube": "https://music.youtube.com/search?q=What+a+Wonderful+World+Louis+Armstrong",
     "articleUrl": "https://en.wikipedia.org/wiki/Earth",
     "explanation": "Earth is the third planet from the Sun and the only known planet to harbour life. It has a protective magnetic field, liquid water oceans, and a nitrogen-oxygen atmosphere."
-  },
-  {
-    "word": "quark",
-    "song": "Up and Down",
-    "artist": "Doja Cat",
-    "spotify": "https://open.spotify.com/search/Up+and+Down+Doja+Cat",
-    "apple": "https://music.apple.com/us/search?term=Up+and+Down+Doja+Cat",
-    "youtube": "https://music.youtube.com/search?q=Up+and+Down+Doja+Cat",
-    "articleUrl": "https://en.wikipedia.org/wiki/Quark",
-    "explanation": "Quarks are fundamental particles that combine to form hadrons like protons and neutrons. They are never found alone — a property called confinement."
   },
   {
     "word": "alien",

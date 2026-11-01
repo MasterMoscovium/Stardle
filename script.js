@@ -43,8 +43,8 @@ const localStorageGameState = () => {
 
     // If the saved state is from a previous day (or midnight passed), reset to a clean board!
     const recordedDate = parsed.date || lastPlayedDate;
-    const isEpochStale = (parsed.wordle?.toLowerCase() === 'epoch' || parsed.solution?.word?.toLowerCase() === 'epoch');
-    if ((recordedDate && recordedDate !== todayIST) || isEpochStale) {
+    const isStaleWord = parsed.wordle && parsed.wordle.toLowerCase() !== 'muons';
+    if ((recordedDate && recordedDate !== todayIST) || isStaleWord) {
       console.log('[Stardle] Clean board reset triggered (' + (recordedDate || 'today') + ' -> ' + todayIST + ').');
       const freshState = {
         ...defaultGameState,

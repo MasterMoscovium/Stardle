@@ -162,8 +162,8 @@ function handleDailyPuzzleState(todayIST) {
     }
   })();
 
-  const isEpochStale = (saved?.wordle?.toLowerCase() === 'epoch' || saved?.solution?.word?.toLowerCase() === 'epoch');
-  const isNewDay = (lastPlayedDate && lastPlayedDate !== todayIST) || (saved?.date && saved.date !== todayIST) || isEpochStale;
+  const isStaleWord = saved?.wordle && saved.wordle.toLowerCase() !== 'muons';
+  const isNewDay = (lastPlayedDate && lastPlayedDate !== todayIST) || (saved?.date && saved.date !== todayIST) || isStaleWord;
 
   // If today is a new calendar day in IST:
   if (isNewDay) {
