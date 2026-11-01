@@ -162,7 +162,8 @@ function handleDailyPuzzleState(todayIST) {
     }
   })();
 
-  const isNewDay = (lastPlayedDate && lastPlayedDate !== todayIST) || (saved?.date && saved.date !== todayIST);
+  const isEpochStale = (saved?.wordle?.toLowerCase() === 'epoch' || saved?.solution?.word?.toLowerCase() === 'epoch');
+  const isNewDay = (lastPlayedDate && lastPlayedDate !== todayIST) || (saved?.date && saved.date !== todayIST) || isEpochStale;
 
   // If today is a new calendar day in IST:
   if (isNewDay) {

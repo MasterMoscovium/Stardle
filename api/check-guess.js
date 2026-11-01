@@ -135,10 +135,16 @@ module.exports = async (req, res) => {
     }
 
     const todayDate = getISTDateString();
+    const targetWord = todayEntry.word.toLowerCase();
 
     // Verify client session token (cryptographically prevents guessIndex spoofing)
     const clientToken = body.token;
-    const tokenData = verifyToken(clientToken);
+    let tokenData = verifyToken(clientToken);
+
+    // If token belonged to a different target word (e.g. from duplicate 'epoch' earlier today), invalidate it
+    if (tokenData && tokenData.t && tokenData.t !== targetWord) {
+      tokenData = null;
+    }
 
     let previousGuesses = [];
     if (tokenData && tokenData.d === todayDate && Array.isArray(tokenData.g)) {
@@ -153,7 +159,10 @@ module.exports = async (req, res) => {
             explanation: todayEntry.explanation,
             articleUrl: todayEntry.articleUrl,
             song: todayEntry.song,
-            artist: todayEntry.artist
+            artist: todayEntry.artist,
+            spotify: todayEntry.spotify,
+            apple: todayEntry.apple,
+            youtube: todayEntry.youtube
           }
         });
       }
@@ -166,7 +175,6 @@ module.exports = async (req, res) => {
       previousGuesses = tokenData.g;
     }
 
-    const targetWord = todayEntry.word.toLowerCase();
     const evalResult = evaluateGuess(guess, targetWord);
     const won = (guess === targetWord);
 
@@ -177,6 +185,7 @@ module.exports = async (req, res) => {
     // Issue new cryptographically signed token for the client
     const newToken = signToken({
       d: todayDate,
+      t: targetWord,
       c: newCount,
       g: newGuesses,
       w: won

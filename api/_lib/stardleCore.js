@@ -119,23 +119,35 @@ function getDaysSinceEpoch() {
 }
 
 // --- Transition phase constants ---
-// Day 1034 (Oct 31, 2026 IST) is the last day of the pre-computed history.
-// Positions 0-8 of cycle 27 were already served before this fix was deployed.
-// For the remainder of cycle 27 (days 1035-1063) we serve only the 29 unplayed
-// word indices, shuffled with a dedicated seed, so no word repeats within ~38 days.
-const TRANSITION_CYCLE        = 27;
-const TRANSITION_PLAYED       = 9;   // how many slots of cycle 27 are consumed
-const TRANSITION_START_DAY    = 1035; // first day of the transition phase
-const TRANSITION_END_DAY      = 1063; // last day  of the transition phase (= 1035 + 28)
-const TRANSITION_SEED         = (TRANSITION_CYCLE * 2654435761 + 9999) >>> 0;
+// The 9 words played historically in order before the backend shuffle was introduced:
+//   apsis, epoch, comet, lunar, helio, orbit, solar, night, atoms
+// plus 'laser' which was served on day 1035 (Nov 1, 2026 IST).
+//
+// These 10 words MUST NOT appear again during the remainder of this 38-word window.
+// Exactly 28 unplayed words remain in curatedWords.
+// For days 1036 to 1063 (the remaining 28 days), we serve exclusively from the
+// 28 unplayed word indices, shuffled deterministically.
+// Normal full-cycle rotation (all 38 words) will resume cleanly on day 1064 (cycle 28).
+const HISTORICALLY_PLAYED_WORDS = new Set([
+  'apsis', 'epoch', 'comet', 'lunar', 'helio', 'orbit', 'solar', 'night', 'atoms',
+  'laser'
+]);
 
-// Lazily-computed, cached transition permutation
+const TRANSITION_START_DAY = 1036; // Nov 2, 2026 IST (today)
+const TRANSITION_END_DAY   = 1063; // Last day of this 38-word window (= 1036 + 27)
+const TRANSITION_SEED      = 20261102;
+
+// Lazily-computed, cached transition permutation over the 28 unplayed words
 let _transitionPerm = null;
-function getTransitionPermutation(length) {
+function getTransitionPermutation() {
   if (_transitionPerm) return _transitionPerm;
-  const cycle27Perm   = getCyclePermutation(TRANSITION_CYCLE, length);
-  const unplayedSlots = cycle27Perm.slice(TRANSITION_PLAYED); // 29 remaining word indices
-  _transitionPerm     = shuffleArray(unplayedSlots, TRANSITION_SEED);
+  const unplayedIndices = [];
+  curatedWords.forEach((item, idx) => {
+    if (item.word && !HISTORICALLY_PLAYED_WORDS.has(item.word.toLowerCase().trim())) {
+      unplayedIndices.push(idx);
+    }
+  });
+  _transitionPerm = shuffleArray(unplayedIndices, TRANSITION_SEED);
   return _transitionPerm;
 }
 
@@ -143,14 +155,22 @@ function getISTDayIndex(length = curatedWords.length) {
   if (!length) return 0;
   const days = getDaysSinceEpoch();
 
-  // Transition phase: serve only words not yet played in cycle 27
-  if (days >= TRANSITION_START_DAY && days <= TRANSITION_END_DAY) {
-    const transitionPerm = getTransitionPermutation(length);
-    const offset = days - TRANSITION_START_DAY; // 0..28
-    return transitionPerm[offset];
+  // Day 1035 was laser
+  if (days === 1035) {
+    const laserIdx = curatedWords.findIndex(w => w.word.toLowerCase() === 'laser');
+    return laserIdx !== -1 ? laserIdx : 12;
   }
 
-  // Normal cycle logic (applies to days before the transition and day 1064+)
+  // Transition phase: serve exclusively the 28 unplayed words for days 1036..1063
+  if (days >= TRANSITION_START_DAY && days <= TRANSITION_END_DAY) {
+    const transitionPerm = getTransitionPermutation();
+    const offset = days - TRANSITION_START_DAY;
+    if (offset >= 0 && offset < transitionPerm.length) {
+      return transitionPerm[offset];
+    }
+  }
+
+  // Normal cycle logic (day 1064+ starts cycle 28)
   const cycle = Math.floor(days / length);
   const dayInCycle = ((days % length) + length) % length;
   const permutation = getCyclePermutation(cycle, length);
